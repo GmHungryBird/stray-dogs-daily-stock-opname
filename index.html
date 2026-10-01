@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#545122">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Stray Dog">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Stray Dog · Stok</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800&family=Archivo+Narrow:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --olive:#545122; --cream:#EBEAC5; --red:#EC3E24; --wa:#25D366; --ink:#000; --white:#fff;
+  --muted:#3B3914; --dim:#2B2A12; --soft:#F7F6E6;
+  --safe-t:env(safe-area-inset-top,0px); --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--cream);color:var(--ink);font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:16px;-webkit-tap-highlight-color:transparent}
+button,input{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.45;cursor:default}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.hidden{display:none!important}
+.app{max-width:520px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+
+/* header */
+.hdr{position:sticky;top:0;z-index:5;background:var(--olive);color:var(--cream);padding:calc(10px + var(--safe-t)) 12px 10px;display:flex;align-items:center;gap:8px;min-height:64px}
+.hdr .brand{font-family:'Archivo Narrow','Archivo',sans-serif;font-weight:700;font-size:24px;letter-spacing:.05em;flex:1}
+.hdr .ttl{flex:1;display:flex;flex-direction:column}
+.hdr .ttl b{font-size:19px;font-weight:800}
+.hdr .ttl span{font-size:13px}
+.iconbtn{width:44px;height:44px;border:none;background:transparent;color:inherit;display:flex;align-items:center;justify-content:center;border-radius:10px;flex-shrink:0}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--olive);padding:0 12px;position:sticky;top:64px;z-index:4}
+.tabs button{height:48px;border:none;background:transparent;color:var(--cream);font-weight:500;font-size:15px;border-bottom:4px solid transparent}
+.tabs button.on{font-weight:800;border-bottom-color:var(--red)}
+
+.wrap{padding:16px;display:flex;flex-direction:column;gap:10px}
+.wrap.pb{padding-bottom:110px}
+.card{background:var(--white);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;gap:10px}
+.grow{flex:1;min-width:0}
+.muted{color:var(--muted);font-size:14px}
+.small{font-size:13px}
+h1{margin:0;font-size:28px;font-weight:800;line-height:1.15}
+h2{margin:0;font-size:19px;font-weight:800}
+.sect{margin:8px 0 0;font-size:15px;font-weight:700;color:var(--olive)}
+
+/* chips */
+.chip{font-size:12px;font-weight:800;border-radius:6px;padding:4px 8px;white-space:nowrap}
+.c-pesan{background:var(--red);color:var(--ink)}
+.c-ok{background:var(--olive);color:var(--cream)}
+.c-cek{border:2px solid var(--ink);padding:2px 6px}
+.c-out{background:var(--ink);color:var(--white)}
+.c-in{background:var(--olive);color:var(--cream)}
+.c-line{border:2px solid var(--olive);color:var(--olive);padding:2px 6px}
+
+/* buttons */
+.btn{height:52px;border:none;border-radius:14px;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;padding:0 16px}
+.b-red{background:var(--red);color:var(--ink);font-size:19px}
+.b-ink{background:var(--ink);color:var(--white)}
+.b-line{background:transparent;border:2px solid var(--ink);color:var(--ink)}
+.b-oline{background:transparent;border:2px solid var(--olive);color:var(--olive)}
+.b-olive{background:var(--olive);color:var(--cream)}
+.b-wa{background:var(--wa);color:var(--ink);font-size:19px}
+.btn.sm{height:44px;font-size:15px;border-radius:10px;padding:0 14px}
+.full{width:100%}
+.pills{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 4px;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{height:42px;padding:0 16px;border-radius:999px;border:2px solid var(--olive);background:transparent;color:var(--olive);font-weight:700;font-size:14px;white-space:nowrap}
+.pill.on{background:var(--ink);border-color:var(--ink);color:var(--white)}
+
+/* inputs */
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:14px;font-weight:700}
+.inp{height:48px;border:2px solid var(--ink);border-radius:12px;padding:0 14px;background:var(--white);font-size:16px;width:100%}
+.qtyin{width:76px;height:48px;border:2px solid var(--ink);border-radius:10px;text-align:center;font-size:20px;font-weight:700;background:var(--white);flex-shrink:0}
+.qtyin.empty{border-style:dashed;border-color:var(--olive);background:var(--soft)}
+.qtyin.dirty{border-color:var(--red);border-width:3px}
+
+/* home tiles */
+.tile{background:var(--white);border-radius:18px;padding:18px;display:flex;align-items:center;gap:16px;border:none;text-align:left;width:100%;color:var(--ink)}
+.tile .ic{width:52px;height:52px;border-radius:14px;background:var(--olive);color:var(--cream);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tile b{font-size:19px;font-weight:800;display:block}
+.tile.dark .ic{background:var(--ink)}
+.logrow{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--cream)}
+.logrow:last-child{border-bottom:none}
+
+/* sticky save */
+.savebar{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--cream);border-top:1px solid var(--olive);padding:12px 16px calc(14px + var(--safe-b))}
+.savebar .inner{max-width:488px;margin:0 auto}
+
+/* PIN */
+.pin{min-height:100%;background:var(--olive);color:var(--cream);display:flex;flex-direction:column;gap:32px;padding:calc(56px + var(--safe-t)) 28px calc(32px + var(--safe-b))}
+.pin .logomark{width:min(260px,70vw);height:auto;display:block}
+.pin .logo{font-family:'Archivo Narrow','Archivo',sans-serif;font-weight:700;font-size:44px;letter-spacing:.05em;line-height:1}
+.dots{display:flex;gap:16px}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--cream)}
+.dot.f{background:var(--cream)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:auto}
+.pad button{height:64px;border:none;border-radius:14px;background:var(--cream);color:var(--ink);font-size:26px;font-weight:700}
+.pad .del{background:transparent;border:2px solid var(--cream);color:var(--cream);display:flex;align-items:center;justify-content:center}
+.pinerr{min-height:22px;font-weight:700;color:var(--white)}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(43,42,18,.82);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--cream);width:100%;max-width:520px;max-height:92vh;overflow-y:auto;border-radius:24px 24px 0 0;padding:12px 20px calc(24px + var(--safe-b));display:flex;flex-direction:column;gap:16px}
+.sheet.warn{border-top:6px solid var(--red)}
+.grab{width:44px;height:5px;border-radius:3px;background:var(--olive);align-self:center}
+.seg{display:grid;border:2px solid var(--ink);border-radius:14px;overflow:hidden}
+.seg button{height:50px;border:none;background:transparent;font-weight:800;font-size:16px}
+.seg button.on{background:var(--ink);color:var(--white)}
+.stepper{display:flex;gap:10px}
+.stepper button{width:60px;height:60px;border:2px solid var(--ink);border-radius:14px;background:var(--white);font-size:28px;font-weight:700;flex-shrink:0}
+.stepper input{flex:1;min-width:0;height:60px;border:2px solid var(--ink);border-radius:14px;text-align:center;font-size:28px;font-weight:800;background:var(--white)}
+.errbox{background:var(--white);border:2px solid var(--red);border-radius:12px;padding:12px 14px;font-weight:700;font-size:15px;line-height:1.4}
+.pre{background:var(--white);border-radius:12px;padding:14px;white-space:pre-wrap;font-size:14px;line-height:1.45;max-height:46vh;overflow:auto}
+
+/* misc */
+.chk{display:flex;align-items:center;gap:12px;min-height:50px;border-bottom:1px solid var(--cream)}
+.chk:last-child{border-bottom:none}
+.chk input{width:24px;height:24px;accent-color:var(--olive);flex-shrink:0}
+.done-txt{text-decoration:line-through}
+.tag-ok{font-size:12px;font-weight:700;color:var(--olive)}
+.dashed{border:2px dashed var(--ink);background:transparent}
+.redline{border:2px solid var(--red)}
+.empty{text-align:center;padding:40px 20px;color:var(--muted);line-height:1.5}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(100px + var(--safe-b));z-index:30;background:var(--ink);color:var(--white);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:14px;font-weight:700;max-width:92vw;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.toast button{background:transparent;border:none;color:var(--wa);font-weight:800;font-size:15px;min-height:36px}
+.loading{position:fixed;top:0;left:0;right:0;height:4px;z-index:40;background:linear-gradient(90deg,var(--red) 0 40%,transparent 40%);background-size:200% 100%;animation:ld 1s linear infinite}
+@keyframes ld{from{background-position:100% 0}to{background-position:-100% 0}}
+@media (prefers-reduced-motion:reduce){.loading{animation:none;background:var(--red)}}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div id="loading" class="loading hidden" aria-hidden="true"></div>
+<div id="sheetHost"></div>
+<div id="toastHost" aria-live="polite"></div>
+
+<script>
+/* =========================================================
+   KONFIGURASI — tempel URL Web App (/exec) dari Apps Script
+   ========================================================= */
+const API_URL = 'https://script.google.com/macros/s/AKfycbxTYvFVjWayKTRd6s05ufyhWDBFrixZ6JP6Zs3lwmOdiENhhQv_0fcwW4aBPy_K-qGf/exec';
+const PIN_LENGTH = 4;
+const APP_VERSION = 'v1 · Okt 2026';
+
+/* ========================================================= */
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => (n === null || n === undefined || n === '') ? '–' : String(Math.round(Number(n) * 100) / 100).replace('.', ',');
+const num = v => Number(String(v).replace(',', '.'));
+const ICON = {
+  back:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>',
+  menu:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>',
+  check:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+  box:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5z"/><path d="M3 8l9 5 9-5"/><line x1="12" y1="13" x2="12" y2="21"/></svg>',
+  chat:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.6A8.4 8.4 0 1 1 21 11.5z"/></svg>',
+  warn:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+  del:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>',
+  close:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>'
+};
+
+/* ---------- state ---------- */
+const store = {
+  get(k){ try { return localStorage.getItem('sd_' + k); } catch(e){ return null; } },
+  set(k,v){ try { localStorage.setItem('sd_' + k, v); } catch(e){} },
+  clear(){ try { ['token','nama','role'].forEach(k => localStorage.removeItem('sd_' + k)); } catch(e){} }
+};
+const S = {
+  token: store.get('token'), nama: store.get('nama'), role: store.get('role'),
+  boot: null, po: null, review: null,
+  opArea: null, gdArea: 'Semua', gdQuery: '', poTab: 'perlu',
+  draft: {}, ordered: {}, pin: ''
+};
+const isReviewer = () => ['manager','supervisor'].includes(String(S.role || '').toLowerCase());
+
+/* ---------- API ---------- */
+let loadingCount = 0;
+function setLoading(d){ loadingCount = Math.max(0, loadingCount + d); $('#loading').classList.toggle('hidden', loadingCount === 0); }
+async function api(action, body = {}){
+  if (API_URL.startsWith('PASTE')) throw new Error('URL API belum diisi di index.html (API_URL).');
+  setLoading(1);
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ action, token: S.token }, body))
+    });
+    const j = await res.json();
+    if (!j.ok){
+      if (j.code === 'AUTH'){ logout(); }
+      throw new Error(j.error || 'Gagal memproses.');
+    }
+    return j;
+  } catch (e) {
+    if (e instanceof TypeError) throw new Error('Tidak bisa terhubung. Cek internet lalu coba lagi.');
+    throw e;
+  } finally { setLoading(-1); }
+}
+
+/* Kirim, dan kalau server minta alasan (anomali) → tanya staf dulu */
+async function submitFlow(action, payload, label){
+  let r = await api(action, payload);
+  if (r.needReason){
+    const alasan = await askReason(label, payload.qty, r.reasons);
+    if (alasan === null) return { cancelled: true };
+    r = await api(action, Object.assign({}, payload, { alasan }));
+  }
+  return r;
+}
+
+async function loadBoot(){ S.boot = await api('bootstrap'); return S.boot; }
+async function loadPO(){ S.po = await api('poList'); return S.po; }
+
+/* ---------- toast & sheet ---------- */
+let toastTimer;
+function toast(msg, actionLabel, onAction){
+  clearTimeout(toastTimer);
+  const host = $('#toastHost');
+  host.innerHTML = `<div class="toast" role="status"><span>${esc(msg)}</span>${actionLabel ? `<button type="button">${esc(actionLabel)}</button>` : ''}</div>`;
+  if (actionLabel) $('button', host).onclick = () => { host.innerHTML = ''; onAction(); };
+  toastTimer = setTimeout(() => host.innerHTML = '', actionLabel ? 7000 : 3200);
+}
+function openSheet(html, cls = ''){
+  const host = $('#sheetHost');
+  host.innerHTML = `<div class="scrim"><div class="sheet ${cls}" role="dialog" aria-modal="true"><div class="grab"></div>${html}</div></div>`;
+  $('.scrim', host).addEventListener('click', e => { if (e.target.classList.contains('scrim')) closeSheet(); });
+  return $('.sheet', host);
+}
+function closeSheet(){ $('#sheetHost').innerHTML = ''; }
+function showErr(e){ toast(e.message || String(e)); }
+
+/* ---------- anomali: minta alasan ---------- */
+function askReason(label, qty, reasons){
+  return new Promise(resolve => {
+    const sh = openSheet(`
+      <div class="row"><span class="ic" style="width:48px;height:48px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0">${ICON.warn}</span>
+      <h1 style="font-size:24px">Angka ini tidak biasa</h1></div>
+      <div class="card"><div class="row"><b class="grow" style="font-size:17px">${esc(label)}</b><b style="font-size:26px">${fmt(qty)}</b></div>
+      <div style="display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.4">${reasons.map(r => `<span>• ${esc(r)}</span>`).join('')}</div></div>
+      <button type="button" class="btn b-ink full" data-fix>Ubah angka</button>
+      <div class="field" style="border-top:1px solid var(--olive);padding-top:14px">
+        <label for="alasan">Angka sudah benar? Tulis alasannya (wajib)</label>
+        <input id="alasan" class="inp" placeholder="misal: ada kiriman langsung dari supplier" style="border-color:var(--olive)">
+      </div>
+      <button type="button" class="btn b-line full" data-send disabled>Simpan &amp; kirim ke Manager</button>`, 'warn');
+    const inp = $('#alasan', sh), send = $('[data-send]', sh);
+    inp.addEventListener('input', () => send.disabled = inp.value.trim().length < 3);
+    $('[data-fix]', sh).onclick = () => { closeSheet(); resolve(null); };
+    send.onclick = () => { const v = inp.value.trim(); closeSheet(); resolve(v); };
+  });
+}
+
+/* ---------- routing (tombol back Android ikut jalan) ---------- */
+function go(view){ if (location.hash !== '#' + view) location.hash = view; else render(); }
+window.addEventListener('hashchange', render);
+function render(){
+  closeSheet();
+  if (!S.token){ return renderPin(); }
+  const v = (location.hash || '#home').slice(1);
+  const views = { home: homeLoad, opname: renderOpname, gudang: renderGudang, po: renderPO, review: renderReview };
+  (views[v] || renderHome)();
+}
+
+function header(title, sub){
+  return `<header class="hdr"><button type="button" class="iconbtn" aria-label="Kembali ke beranda" onclick="go('home')">${ICON.back}</button>
+  <div class="ttl"><b>${esc(title)}</b>${sub ? `<span>${esc(sub)}</span>` : ''}</div></header>`;
+}
+const app = () => $('#app');
+const today = () => new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Makassar', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
+
+/* =========================================================
+   PIN
+   ========================================================= */
+function renderPin(err = ''){
+  const dots = Array.from({ length: PIN_LENGTH }, (_, i) => `<span class="dot ${i < S.pin.length ? 'f' : ''}"></span>`).join('');
+  const keys = [1,2,3,4,5,6,7,8,9].map(n => `<button type="button" data-k="${n}">${n}</button>`).join('');
+  app().innerHTML = `<div class="pin">
+    <div style="display:flex;flex-direction:column;gap:10px"><img src="logo-cream.png" alt="Stray Dog" class="logomark"><div style="font-weight:500;font-size:15px">Stok &amp; PO</div></div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <h1 style="font-size:26px">Masukkan PIN kamu</h1>
+      <p style="margin:0;font-size:15px;line-height:1.5">Cukup sekali. Setelah ini HP kamu langsung masuk, dan semua input tercatat atas nama kamu.</p>
+      <div class="dots" aria-label="${S.pin.length} dari ${PIN_LENGTH} digit terisi">${dots}</div>
+      <div class="pinerr" role="alert">${esc(err)}</div>
+    </div>
+    <div class="pad">${keys}<span></span><button type="button" data-k="0">0</button><button type="button" class="del" data-del aria-label="Hapus digit">${ICON.del}</button></div>
+  </div>`;
+  $$('[data-k]').forEach(b => b.onclick = () => pinKey(b.dataset.k));
+  $('[data-del]').onclick = () => { S.pin = S.pin.slice(0, -1); renderPin(); };
+}
+async function pinKey(k){
+  if (S.pin.length >= PIN_LENGTH) return;
+  S.pin += k; renderPin();
+  if (S.pin.length === PIN_LENGTH){
+    try {
+      const r = await api('login', { pin: S.pin });
+      S.token = r.token; S.nama = r.nama; S.role = r.role;
+      store.set('token', r.token); store.set('nama', r.nama); store.set('role', r.role);
+      S.pin = ''; location.hash = 'home'; await homeLoad();
+    } catch (e) { S.pin = ''; renderPin(e.message); }
+  }
+}
+function logout(){ store.clear(); S.token = null; S.nama = null; S.role = null; S.boot = null; S.pin = ''; renderPin(); }
+
+/* =========================================================
+   BERANDA
+   ========================================================= */
+async function homeLoad(){
+  renderHome();
+  try { await loadBoot(); S.role = S.boot.me.role; store.set('role', S.role); renderHome(); } catch (e) { showErr(e); }
+}
+function renderHome(){
+  const b = S.boot, c = b ? b.counts : null;
+  const badge = n => n ? `<span class="chip c-pesan" style="font-size:13px;border-radius:999px;padding:6px 10px">${n}</span>` : '';
+  app().innerHTML = `
+  <header class="hdr"><span class="brand">STRAY DOG</span>
+    <button type="button" class="iconbtn" aria-label="Menu" id="menuBtn">${ICON.menu}</button></header>
+  <div class="wrap" style="padding-top:22px">
+    <div class="muted" style="color:var(--olive);font-weight:500;font-size:15px">${esc(today())}</div>
+    <h1>Halo, ${esc(S.nama || '')}</h1>
+  </div>
+  <div class="wrap" style="padding-top:4px">
+    <button type="button" class="tile" onclick="go('opname')"><span class="ic">${ICON.check}</span>
+      <span class="grow"><b>Opname Chiller</b><span class="muted">Hitung fisik harian</span></span>${c ? badge(c.chillerBelum ? c.chillerBelum + ' belum' : 0) : ''}</button>
+    <button type="button" class="tile" onclick="go('gudang')"><span class="ic">${ICON.box}</span>
+      <span class="grow"><b>Gudang IN / OUT</b><span class="muted">Dry goods &amp; Dry Store</span></span></button>
+    <button type="button" class="tile" onclick="go('po')"><span class="ic">${ICON.chat}</span>
+      <span class="grow"><b>PO</b><span class="muted">${c ? `${c.perluOrder} perlu order, ${c.menunggu} menunggu datang` : 'Order ke supplier'}</span></span>${c ? badge(c.perluOrder) : ''}</button>
+    ${isReviewer() ? `<button type="button" class="tile dark" onclick="go('review')"><span class="ic">${ICON.warn}</span>
+      <span class="grow"><b>Perlu Ditinjau</b><span class="muted">Angka tidak biasa dari staf</span></span>${c ? badge(c.review) : ''}</button>` : ''}
+    <h2 class="sect">Input terakhir kamu</h2>
+    <div class="card" style="padding:4px 16px" id="recent">${recentHTML()}</div>
+  </div>`;
+  $('#menuBtn').onclick = openMenu;
+  $$('[data-undo]').forEach(btn => btn.onclick = () => doUndo(btn.dataset.undo));
+}
+function tipeChip(t){
+  const map = { OUT:['OUT','c-out'], IN:['IN','c-in'], OPNAME:['OPN','c-line'], ADJ:['HITUNG','c-line'], SALDO_AWAL:['AWAL','c-line'], TERIMA:['TERIMA','c-in'], KOREKSI:['KOREKSI','c-cek'] };
+  const [l, c] = map[t] || [t, 'c-line'];
+  return `<span class="chip ${c}">${esc(l)}</span>`;
+}
+function recentHTML(){
+  if (!S.boot) return `<div class="logrow muted">Memuat…</div>`;
+  if (!S.boot.recent.length) return `<div class="logrow muted">Belum ada input.</div>`;
+  return S.boot.recent.map(l => `<div class="logrow">${tipeChip(l.tipe)}
+    <span class="grow" style="font-size:15px;${l.status === 'BATAL' ? 'text-decoration:line-through;' : ''}">${esc(l.item)} · ${fmt(l.qty)} ${esc(l.u)}</span>
+    ${l.canUndo ? `<button type="button" class="btn b-line sm" style="height:38px" data-undo="${esc(l.id)}">Batal</button>` : `<span class="muted">${esc(l.jam)}</span>`}</div>`).join('');
+}
+async function doUndo(id){
+  try { await api('undo', { logId: id }); toast('Input dibatalkan'); await loadBoot(); render(); } catch (e) { showErr(e); }
+}
+function openMenu(){
+  const sh = openSheet(`
+    <div><h2>${esc(S.nama || '')}</h2><div class="muted">${esc(S.role || 'Staff')}</div></div>
+    <button type="button" class="btn b-line full" data-r>Muat ulang data</button>
+    <button type="button" class="btn b-ink full" data-out>Ganti user</button>
+    <div class="muted small" style="text-align:center">Stray Dog Stok ${APP_VERSION}</div>`);
+  $('[data-r]', sh).onclick = () => { closeSheet(); homeLoad(); };
+  $('[data-out]', sh).onclick = () => { closeSheet(); logout(); };
+}
+
+/* =========================================================
+   OPNAME CHILLER
+   ========================================================= */
+async function ensureBoot(){ if (!S.boot) { try { await loadBoot(); } catch (e) { showErr(e); return false; } } return true; }
+async function renderOpname(){
+  app().innerHTML = header('Opname Chiller', 'Memuat…') + '<div class="empty">Memuat data…</div>';
+  if (!await ensureBoot()) return;
+  const items = S.boot.items.filter(i => i.m === 'opname');
+  const areas = [...new Set(items.map(i => i.a))];
+  if (!S.opArea || !areas.includes(S.opArea)) S.opArea = areas[0];
+  const list = items.filter(i => i.a === S.opArea);
+  const filled = items.filter(i => i.today).length;
+  const nDraft = Object.keys(S.draft).length;
+  const dayNow = Number(new Intl.DateTimeFormat('en', { timeZone: 'Asia/Makassar', day: 'numeric' }).format(new Date()));
+  app().innerHTML = header('Opname Chiller', `${filled}/${items.length} terisi hari ini`) +
+  `<div class="pills">${areas.map(a => `<button type="button" class="pill ${a === S.opArea ? 'on' : ''}" data-area="${esc(a)}">${esc(a)}</button>`).join('')}</div>
+  <div class="wrap pb">${list.map((it, idx) => {
+    const d = S.draft[it.n];
+    const val = d !== undefined ? d : (it.today ? fmt(it.stok).replace(',', '.') : '');
+    const info = it.today ? '' : (it.lastDay ? ` · terakhir tgl ${it.lastDay}${dayNow - it.lastDay >= 3 ? ' ⚠' : ''}` : ' · belum dihitung bulan ini');
+    const mm = (it.min !== null && it.max !== null) ? ` · Min ${fmt(it.min)} · Max ${fmt(it.max)}` : '';
+    const chip = it.status === 'PESAN' ? '<span class="chip c-pesan">PESAN</span>' : it.status === 'OK' && it.today ? '<span class="chip c-ok">OK</span>' : it.status === 'CEK' ? '<span class="chip c-cek">CEK</span>' : '';
+    return `<div class="card" style="flex-direction:row;align-items:center;gap:12px;padding:12px 14px">
+      <div class="grow" style="display:flex;flex-direction:column;gap:3px"><label for="q${idx}" style="font-size:17px;font-weight:700">${esc(it.n)}</label>
+      <span class="small" style="color:var(--muted)">${esc(it.u || '?')}${mm}${info}</span></div>${chip}
+      <input id="q${idx}" class="qtyin ${val === '' ? 'empty' : ''} ${d !== undefined ? 'dirty' : ''}" inputmode="decimal" autocomplete="off" value="${esc(val)}" placeholder="–" data-name="${esc(it.n)}" data-orig="${esc(it.today ? String(it.stok) : '')}">
+    </div>`; }).join('') || '<div class="empty">Tidak ada item di area ini.</div>'}</div>
+  <div class="savebar"><div class="inner"><button type="button" class="btn b-red full" id="saveOp" ${nDraft ? '' : 'disabled'}>${nDraft ? `Simpan ${nDraft} item` : 'Isi angka untuk menyimpan'}</button></div></div>`;
+  $$('[data-area]').forEach(b => b.onclick = () => { S.opArea = b.dataset.area; renderOpname(); });
+  $$('.qtyin').forEach(inp => inp.addEventListener('input', () => {
+    const v = inp.value.trim().replace(',', '.');
+    if (v === '' || v === inp.dataset.orig) delete S.draft[inp.dataset.name]; else S.draft[inp.dataset.name] = v;
+    inp.classList.toggle('dirty', S.draft[inp.dataset.name] !== undefined);
+    inp.classList.toggle('empty', v === '');
+    const n = Object.keys(S.draft).length, btn = $('#saveOp');
+    btn.disabled = !n; btn.textContent = n ? `Simpan ${n} item` : 'Isi angka untuk menyimpan';
+  }));
+  $('#saveOp').onclick = saveOpname;
+}
+async function saveOpname(){
+  const entries = Object.entries(S.draft);
+  let saved = 0, flagged = 0;
+  for (const [name, val] of entries){
+    if (isNaN(num(val))) { toast(`${name}: angka tidak valid`); break; }
+    try {
+      const r = await submitFlow('opname', { item: name, qty: num(val) }, name);
+      if (r.cancelled){ toast(`Perbaiki angka ${name} dulu`); break; }
+      delete S.draft[name]; saved++; if (r.anomali) flagged++;
+    } catch (e) { showErr(e); break; }
+  }
+  try { await loadBoot(); } catch (e) {}
+  renderOpname();
+  if (saved) toast(`${saved} item tersimpan${flagged ? `, ${flagged} dikirim ke Manager` : ''}`);
+}
+
+/* =========================================================
+   GUDANG
+   ========================================================= */
+async function renderGudang(){
+  app().innerHTML = header('Gudang IN / OUT', 'Memuat…') + '<div class="empty">Memuat data…</div>';
+  if (!await ensureBoot()) return;
+  const items = S.boot.items.filter(i => i.m === 'gudang');
+  const areas = ['Semua', ...new Set(items.map(i => i.a))];
+  app().innerHTML = header('Gudang IN / OUT', 'Saldo terkini, update tiap transaksi') + `
+  <div class="wrap" style="padding-bottom:0"><div class="field"><label for="cari">Cari item</label>
+    <input id="cari" class="inp" placeholder="ketik nama item…" autocomplete="off" value="${esc(S.gdQuery)}"></div></div>
+  <div class="pills">${areas.map(a => `<button type="button" class="pill ${a === S.gdArea ? 'on' : ''}" data-area="${esc(a)}">${esc(a)}</button>`).join('')}</div>
+  <div class="wrap" id="gdList"></div>`;
+  $$('[data-area]').forEach(b => b.onclick = () => { S.gdArea = b.dataset.area; renderGudang(); });
+  $('#cari').addEventListener('input', e => { S.gdQuery = e.target.value; drawGudangList(items); });
+  drawGudangList(items);
+}
+function drawGudangList(items){
+  const q = S.gdQuery.trim().toLowerCase();
+  const list = items.filter(i => (S.gdArea === 'Semua' || i.a === S.gdArea) && (!q || i.n.toLowerCase().includes(q)))
+    .sort((a, b) => (a.status === 'PESAN' ? 0 : 1) - (b.status === 'PESAN' ? 0 : 1));
+  const el = $('#gdList');
+  el.innerHTML = list.map((it, idx) => {
+    const noSaldo = it.stok === null;
+    const chip = it.status === 'PESAN' ? '<span class="chip c-pesan">PESAN</span>' : it.status === 'OK' ? '<span class="chip c-ok">OK</span>' : it.status === 'CEK' ? '<span class="chip c-cek">CEK MASTER</span>' : '';
+    const mm = (it.min !== null && it.max !== null) ? `Min ${fmt(it.min)} · Max ${fmt(it.max)}` : 'Satuan / Min / Max belum diisi';
+    const ord = it.ordered ? ' · sudah diorder' : '';
+    return `<div class="card ${it.status === 'PESAN' ? 'redline' : ''}">
+      <div class="row" style="align-items:baseline"><span class="grow" style="font-size:17px;font-weight:700">${esc(it.n)}</span>
+        <span style="font-size:24px;font-weight:800">${noSaldo ? '–' : fmt(it.stok)} <span style="font-size:14px;font-weight:500">${esc(it.u)}</span></span></div>
+      <div class="row">${chip}<span class="grow small" style="color:var(--muted)">${noSaldo ? 'Belum ada saldo, hitung fisik dulu' : mm + ord}</span>
+      ${noSaldo ? `<button type="button" class="btn b-olive sm" data-i="${idx}" data-t="HITUNG">Hitung fisik</button>` :
+        `<button type="button" class="btn b-ink sm" data-i="${idx}" data-t="OUT">OUT</button><button type="button" class="btn b-oline sm" data-i="${idx}" data-t="IN">IN</button>`}</div>
+    </div>`; }).join('') || '<div class="empty">Item tidak ditemukan.</div>';
+  $$('[data-t]', el).forEach(b => b.onclick = () => openGudangSheet(list[Number(b.dataset.i)], b.dataset.t));
+}
+function openGudangSheet(it, tipe){
+  const tipes = [['OUT','OUT · ambil'], ['IN','IN · masuk'], ['HITUNG','Hitung fisik']];
+  if (isReviewer()) tipes.push(['SALDO_AWAL', 'Set saldo']);
+  let cur = tipe;
+  const sh = openSheet(`
+    <div class="row" style="align-items:flex-start"><div class="grow" style="display:flex;flex-direction:column;gap:4px">
+      <span class="small" style="font-weight:700;color:var(--olive)">${esc(it.a)}</span>
+      <h1 style="font-size:26px">${esc(it.n)}</h1>
+      <span style="font-size:15px">Saldo sekarang: <b>${it.stok === null ? 'belum ada' : fmt(it.stok) + ' ' + esc(it.u)}</b></span></div>
+      <button type="button" class="iconbtn" aria-label="Tutup" data-close>${ICON.close}</button></div>
+    <div class="seg" style="grid-template-columns:repeat(${tipes.length},1fr)">${tipes.map(([k, l]) => `<button type="button" data-seg="${k}">${l}</button>`).join('')}</div>
+    <div class="field"><label for="gq" id="gqLabel">Jumlah</label>
+      <div class="stepper"><button type="button" aria-label="Kurangi" data-step="-1">−</button>
+      <input id="gq" inputmode="decimal" autocomplete="off" value="${tipe === 'HITUNG' ? '' : '1'}">
+      <button type="button" aria-label="Tambah" data-step="1">+</button></div>
+      <span class="muted">Satuan: ${esc(it.u || '?')} (sesuai Master Item)</span></div>
+    <div class="field"><label for="gc">Catatan (opsional)</label><input id="gc" class="inp" style="border-color:var(--olive)" placeholder="misal: untuk prep sore"></div>
+    <div class="card" style="flex-direction:row;justify-content:space-between;padding:12px 14px;font-size:15px"><span>Saldo setelah ini</span><b id="gPrev">–</b></div>
+    <div id="gErr"></div>
+    <button type="button" class="btn b-red full" id="gSave">Simpan</button>
+    <span class="muted small" style="text-align:center">Tercatat atas nama ${esc(S.nama)}</span>`);
+  const q = $('#gq', sh);
+  const update = () => {
+    $$('[data-seg]', sh).forEach(b => b.classList.toggle('on', b.dataset.seg === cur));
+    $('#gqLabel', sh).textContent = cur === 'HITUNG' ? 'Jumlah fisik di rak sekarang' : cur === 'SALDO_AWAL' ? 'Saldo yang benar sekarang' : 'Jumlah';
+    const v = num(q.value), s = it.stok;
+    let after = null;
+    if (!isNaN(v) && q.value !== ''){
+      if (cur === 'OUT' && s !== null) after = s - v;
+      else if (cur === 'IN' && s !== null) after = s + v;
+      else if (cur === 'HITUNG' || cur === 'SALDO_AWAL') after = v;
+    }
+    const prev = $('#gPrev', sh);
+    if (after === null) prev.textContent = '–';
+    else if (after < 0) prev.textContent = 'Minus! Cek lagi';
+    else prev.textContent = `${fmt(after)} ${it.u}${it.min !== null ? (after <= it.min ? ' · PESAN' : ' · OK') : ''}`;
+    const label = { OUT: 'Simpan OUT', IN: 'Simpan IN', HITUNG: 'Simpan hitungan', SALDO_AWAL: 'Simpan saldo' }[cur];
+    $('#gSave', sh).textContent = label;
+  };
+  $$('[data-seg]', sh).forEach(b => b.onclick = () => { cur = b.dataset.seg; $('#gErr', sh).innerHTML = ''; update(); });
+  $$('[data-step]', sh).forEach(b => b.onclick = () => { const v = isNaN(num(q.value)) ? 0 : num(q.value); q.value = String(Math.max(0, Math.round((v + Number(b.dataset.step)) * 100) / 100)); update(); });
+  q.addEventListener('input', update);
+  $('[data-close]', sh).onclick = closeSheet;
+  $('#gSave', sh).onclick = async () => {
+    const v = num(q.value);
+    if (q.value.trim() === '' || isNaN(v)) { $('#gErr', sh).innerHTML = '<div class="errbox">Isi jumlahnya dulu.</div>'; return; }
+    const catatan = $('#gc', sh).value.trim();
+    const btn = $('#gSave', sh); btn.disabled = true;
+    try {
+      const r = await submitFlow('gudang', { item: it.n, tipe: cur, qty: v, catatan }, it.n);
+      if (r.cancelled){ openGudangSheet(it, cur); return; }
+      closeSheet();
+      await loadBoot(); renderGudang();
+      const word = { OUT: 'OUT', IN: 'IN', HITUNG: 'Hitungan', SALDO_AWAL: 'Saldo' }[cur];
+      toast(`${word} tersimpan${r.anomali ? ', dikirim ke Manager' : ''}`, 'Batal', () => doUndo(r.logId));
+    } catch (e) {
+      btn.disabled = false;
+      if (!$('#gErr', sh)) { openGudangSheet(it, cur); }
+      const box = $('#gErr'); if (box) box.innerHTML = `<div class="errbox">${esc(e.message)}</div>`;
+    }
+  };
+  update();
+  setTimeout(() => q.focus(), 50);
+}
+
+/* =========================================================
+   PO
+   ========================================================= */
+async function renderPO(){
+  drawPO(true);
+  try { await loadPO(); drawPO(); } catch (e) { showErr(e); }
+}
+function drawPO(loadingNow){
+  const p = S.po;
+  const nPerlu = p ? p.perlu.reduce((a, g) => a + g.items.length, 0) : '…';
+  const nWait = p ? p.menunggu.length : '…';
+  let body = '';
+  if (!p) body = '<div class="empty">Memuat data PO…</div>';
+  else if (S.poTab === 'perlu') body = poPerluHTML(p);
+  else body = poWaitHTML(p);
+  app().innerHTML = `<header class="hdr"><button type="button" class="iconbtn" aria-label="Kembali ke beranda" onclick="go('home')">${ICON.back}</button><div class="ttl"><b>PO</b></div></header>
+  <div class="tabs"><button type="button" class="${S.poTab === 'perlu' ? 'on' : ''}" data-tab="perlu">Perlu Order · ${nPerlu}</button>
+  <button type="button" class="${S.poTab === 'wait' ? 'on' : ''}" data-tab="wait">Menunggu Datang · ${nWait}</button></div>
+  <div class="wrap">${body}</div>`;
+  $$('[data-tab]').forEach(b => b.onclick = () => { S.poTab = b.dataset.tab; renderPO(); });
+  if (!p) return;
+  if (S.poTab === 'perlu') bindPerlu(p); else bindWait(p);
+}
+const todayShort = () => new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Makassar', day: 'numeric', month: 'short' }).format(new Date());
+function poPerluHTML(p){
+  if (!p.perlu.length) return '<div class="empty">Semua aman. Belum ada item yang perlu diorder.</div>';
+  return p.perlu.map((g, gi) => {
+    const rows = g.items.map((x, xi) => {
+      const done = S.ordered[x.n];
+      return `<label class="chk"><input type="checkbox" data-g="${gi}" data-x="${xi}" ${done ? 'checked' : ''}>
+        <span class="grow" style="display:flex;flex-direction:column"><span class="${done ? 'done-txt' : ''}" style="font-size:16px">${esc(x.n)}: ${fmt(x.qty)} ${esc(x.u)}</span>
+        ${done ? `<span class="tag-ok">Diorder ${esc(done.tgl)} oleh ${esc(S.nama)}</span>` : ''}</span></label>`; }).join('');
+    if (!g.supplier) return `<div class="card dashed"><h2 style="font-size:17px">Belum ada supplier · ${g.items.length} item</h2>
+      <div>${rows}</div><span class="muted small">Lengkapi kolom Supplier di Master Item supaya masuk ke tombol WA.</span></div>`;
+    const main = g.hasWa ? `<a class="btn b-wa grow" href="${esc(g.waUrl)}" target="_blank" rel="noopener">${ICON.chat}Buka WA</a>`
+      : g.link ? `<a class="btn b-wa grow" href="${esc(g.link)}" target="_blank" rel="noopener">Buka toko</a>`
+      : `<a class="btn b-wa grow" href="${esc(g.waUrl)}" target="_blank" rel="noopener">${ICON.chat}Buka WA</a>`;
+    return `<div class="card"><div class="row" style="align-items:baseline"><h2 class="grow">${esc(g.supplier)}</h2><span class="muted">${g.items.length} item</span></div>
+      <div>${rows}</div>
+      <div class="row">${main}<button type="button" class="btn b-line sm" style="height:52px" data-text="${gi}">Lihat teks</button></div>
+      ${!g.hasWa && !g.link ? '<span class="muted small">No WA supplier belum diisi, jadi kamu pilih kontaknya sendiri di WA.</span>' : ''}
+      <button type="button" class="btn b-oline sm" data-all="${gi}">Tandai semua sudah diorder</button></div>`;
+  }).join('');
+}
+function bindPerlu(p){
+  $$('input[type=checkbox][data-g]').forEach(cb => cb.onchange = async () => {
+    const x = p.perlu[Number(cb.dataset.g)].items[Number(cb.dataset.x)];
+    cb.disabled = true;
+    try {
+      if (cb.checked){
+        const r = await api('markOrdered', { items: [{ item: x.n, qty: x.qty }] });
+        S.ordered[x.n] = { id: r.ids[0], tgl: todayShort() };
+      } else if (S.ordered[x.n]){
+        if (S.ordered[x.n].id) await api('cancelOrder', { poId: S.ordered[x.n].id });
+        delete S.ordered[x.n];
+      }
+    } catch (e) { cb.checked = !cb.checked; showErr(e); }
+    drawPO();
+  });
+  $$('[data-all]').forEach(b => b.onclick = async () => {
+    const g = p.perlu[Number(b.dataset.all)];
+    const todo = g.items.filter(x => !S.ordered[x.n]);
+    if (!todo.length) return;
+    try {
+      const r = await api('markOrdered', { items: todo.map(x => ({ item: x.n, qty: x.qty })) });
+      todo.forEach((x, i) => S.ordered[x.n] = { id: r.ids[i], tgl: todayShort() });
+      toast(`${todo.length} item ditandai sudah diorder`); drawPO();
+    } catch (e) { showErr(e); }
+  });
+  $$('[data-text]').forEach(b => b.onclick = () => {
+    const g = p.perlu[Number(b.dataset.text)];
+    const sh = openSheet(`<div class="row"><h2 class="grow">PO ${esc(g.supplier)}</h2><button type="button" class="iconbtn" aria-label="Tutup" data-close>${ICON.close}</button></div>
+      <div class="pre">${esc(g.text)}</div><button type="button" class="btn b-ink full" data-copy>Salin teks</button>`);
+    $('[data-close]', sh).onclick = closeSheet;
+    $('[data-copy]', sh).onclick = async () => { try { await navigator.clipboard.writeText(g.text); toast('Teks disalin'); } catch (e) { toast('Tidak bisa menyalin otomatis. Tekan lama teksnya.'); } };
+  });
+}
+function poWaitHTML(p){
+  if (!p.menunggu.length) return '<div class="empty">Tidak ada order yang sedang ditunggu.</div>';
+  return `<p style="margin:0 0 4px;font-size:14px;line-height:1.45">Item di sini tidak muncul lagi di Perlu Order. Untuk item gudang, saldo bertambah otomatis saat ditandai datang.</p>` +
+  p.menunggu.map((w, i) => `<div class="card ${w.telat ? 'redline' : ''}">
+    <div class="row" style="align-items:baseline"><span class="grow" style="font-size:17px;font-weight:700">${esc(w.n)}: ${fmt(w.qty)} ${esc(w.u)}</span>
+      <span class="chip ${w.telat ? 'c-pesan' : 'c-ok'}">${w.hari === 0 ? 'hari ini' : w.hari + ' hari'}</span></div>
+    <span class="muted">${esc(w.supplier || 'Tanpa supplier')}, diorder ${esc(w.tgl)} oleh ${esc(w.oleh)}</span>
+    <div class="row"><button type="button" class="btn b-ink grow" data-recv="${i}">${w.gudang ? 'Sudah datang · catat IN' : 'Sudah datang'}</button>
+      ${w.link ? `<a class="btn b-line sm" style="height:52px" href="${esc(w.link)}" target="_blank" rel="noopener">Lacak</a>` : ''}</div>
+    <button type="button" class="btn sm" style="background:transparent;color:var(--muted);text-decoration:underline;height:36px" data-cancel="${i}">Batalkan order</button>
+  </div>`).join('');
+}
+function bindWait(p){
+  $$('[data-recv]').forEach(b => b.onclick = () => openReceive(p.menunggu[Number(b.dataset.recv)]));
+  $$('[data-cancel]').forEach(b => b.onclick = async () => {
+    const w = p.menunggu[Number(b.dataset.cancel)];
+    if (!confirm(`Batalkan order ${w.n}? Item akan kembali ke Perlu Order.`)) return;
+    try { await api('cancelOrder', { poId: w.id }); toast('Order dibatalkan'); renderPO(); } catch (e) { showErr(e); }
+  });
+}
+function openReceive(w){
+  const sh = openSheet(`<div class="row"><h2 class="grow">${esc(w.n)}</h2><button type="button" class="iconbtn" aria-label="Tutup" data-close>${ICON.close}</button></div>
+    <div class="muted">Diorder ${fmt(w.qty)} ${esc(w.u)} dari ${esc(w.supplier || 'tanpa supplier')}</div>
+    <div class="field"><label for="rq">Jumlah yang datang</label><input id="rq" class="inp" inputmode="decimal" value="${esc(String(w.qty))}" style="font-size:22px;font-weight:800;text-align:center;height:56px"></div>
+    ${w.gudang ? '<span class="muted small">Akan dicatat sebagai IN, saldo gudang bertambah.</span>' : '<span class="muted small">Item chiller: jangan lupa masukkan ke opname berikutnya.</span>'}
+    <div id="rErr"></div>
+    <button type="button" class="btn b-red full" data-ok>Simpan barang datang</button>`);
+  $('[data-close]', sh).onclick = closeSheet;
+  $('[data-ok]', sh).onclick = async () => {
+    const v = num($('#rq', sh).value);
+    if (isNaN(v) || v <= 0) { $('#rErr', sh).innerHTML = '<div class="errbox">Isi jumlah yang datang.</div>'; return; }
+    try {
+      const r = await submitFlow('terima', { item: w.n, qty: v, poId: w.id }, w.n);
+      if (r.cancelled) { openReceive(w); return; }
+      closeSheet(); toast('Barang datang tercatat'); S.boot = null; renderPO();
+    } catch (e) { const box = $('#rErr'); if (box) box.innerHTML = `<div class="errbox">${esc(e.message)}</div>`; else showErr(e); }
+  };
+}
+
+/* =========================================================
+   REVIEW (Manager / Supervisor)
+   ========================================================= */
+async function renderReview(){
+  if (!isReviewer()) return go('home');
+  app().innerHTML = header('Perlu Ditinjau', 'Memuat…') + '<div class="empty">Memuat…</div>';
+  try { S.review = await api('reviewList'); } catch (e) { showErr(e); return; }
+  const list = S.review.list;
+  app().innerHTML = header(`Perlu Ditinjau · ${list.length}`, 'Khusus Manager / Supervisor') + `<div class="wrap">
+    <p style="margin:0;font-size:14px;line-height:1.45">Angka asli tidak pernah dihapus. Koreksi tercatat sebagai baris baru di Log atas nama kamu.</p>
+    ${list.length ? list.map((a, i) => `<div class="card">
+      <div class="row">${tipeChip(a.tipe)}<span class="muted small">${esc(a.waktu)} · ${esc(a.staf)}</span></div>
+      <span style="font-size:17px;font-weight:700">${esc(a.item)}: ${fmt(a.qty)} ${esc(a.u)}</span>
+      <span style="font-size:14px;line-height:1.45">${esc(a.alasanSistem).split(' | ').join('<br>')}</span>
+      ${a.alasanStaf ? `<span style="font-size:14px">Alasan staf: “${esc(a.alasanStaf)}”</span>` : ''}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button type="button" class="btn b-olive sm" data-ok="${i}">Setujui</button>
+        <button type="button" class="btn b-line sm" data-fix="${i}">Koreksi</button></div>
+    </div>`).join('') : '<div class="empty">Tidak ada yang perlu ditinjau.</div>'}</div>`;
+  $$('[data-ok]').forEach(b => b.onclick = async () => {
+    try { await api('resolve', { id: list[Number(b.dataset.ok)].id, keputusan: 'SETUJU' }); toast('Disetujui'); S.boot = null; renderReview(); } catch (e) { showErr(e); }
+  });
+  $$('[data-fix]').forEach(b => b.onclick = () => openKoreksi(list[Number(b.dataset.fix)]));
+}
+function openKoreksi(a){
+  const label = a.gudang ? `Saldo ${a.item} yang benar SEKARANG` : `Angka hitungan ${a.item} yang benar`;
+  const sh = openSheet(`<div class="row"><h2 class="grow">Koreksi</h2><button type="button" class="iconbtn" aria-label="Tutup" data-close>${ICON.close}</button></div>
+    <div class="field"><label for="kq">${esc(label)} (${esc(a.u)})</label><input id="kq" class="inp" inputmode="decimal" style="font-size:22px;font-weight:800;text-align:center;height:56px"></div>
+    <div id="kErr"></div><button type="button" class="btn b-red full" data-ok>Simpan koreksi</button>`);
+  $('[data-close]', sh).onclick = closeSheet;
+  $('[data-ok]', sh).onclick = async () => {
+    const v = num($('#kq', sh).value);
+    if ($('#kq', sh).value.trim() === '' || isNaN(v)) { $('#kErr', sh).innerHTML = '<div class="errbox">Isi angkanya dulu.</div>'; return; }
+    try { await api('resolve', { id: a.id, keputusan: 'KOREKSI', qtyBaru: v }); closeSheet(); toast('Koreksi tersimpan'); S.boot = null; renderReview(); }
+    catch (e) { $('#kErr', sh).innerHTML = `<div class="errbox">${esc(e.message)}</div>`; }
+  };
+}
+
+/* ---------- start ---------- */
+if (S.token){ if (!location.hash) location.hash = 'home'; homeLoad().then(() => { if (location.hash !== '#home') render(); }); }
+else renderPin();
+</script>
+</body>
+</html>

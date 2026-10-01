@@ -131,6 +131,13 @@ h2{margin:0;font-size:19px;font-weight:800}
 .tag-ok{font-size:12px;font-weight:700;color:var(--olive)}
 .dashed{border:2px dashed var(--ink);background:transparent}
 .redline{border:2px solid var(--red)}
+.linkname{border:none;background:transparent;padding:0;text-align:left;font-size:17px;font-weight:700;text-decoration:underline;text-decoration-color:var(--olive);text-underline-offset:3px;min-height:32px}
+.datenav{display:flex;align-items:center;gap:8px;padding:12px 16px 0}
+.datenav input{flex:1;height:48px;border:2px solid var(--ink);border-radius:12px;background:var(--white);padding:0 10px;font-size:16px;font-weight:700;min-width:0}
+.datenav .iconbtn{border:2px solid var(--ink);width:48px;height:48px;border-radius:12px;background:var(--white)}
+.hrow{display:flex;flex-direction:column;gap:6px;padding:12px 0;border-bottom:1px solid var(--cream)}
+.hrow:last-child{border-bottom:none}
+.hrow.batal .hmain{text-decoration:line-through;opacity:.6}
 .empty{text-align:center;padding:40px 20px;color:var(--muted);line-height:1.5}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(100px + var(--safe-b));z-index:30;background:var(--ink);color:var(--white);border-radius:14px;padding:12px 16px;display:flex;align-items:center;gap:14px;font-weight:700;max-width:92vw;box-shadow:0 6px 20px rgba(0,0,0,.25)}
 .toast button{background:transparent;border:none;color:var(--wa);font-weight:800;font-size:15px;min-height:36px}
@@ -167,6 +174,8 @@ const ICON = {
   chat:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.6A8.4 8.4 0 1 1 21 11.5z"/></svg>',
   warn:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
   del:'<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/></svg>',
+  clock:'<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>',
+  next:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>',
   close:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>'
 };
 
@@ -180,7 +189,8 @@ const S = {
   token: store.get('token'), nama: store.get('nama'), role: store.get('role'),
   boot: null, po: null, review: null,
   opArea: null, gdArea: 'Semua', gdQuery: '', poTab: 'perlu',
-  draft: {}, ordered: {}, pin: ''
+  draft: {}, ordered: {}, pin: '',
+  hDate: null, hMine: false, hTipe: 'Semua'
 };
 const isReviewer = () => ['manager','supervisor'].includes(String(S.role || '').toLowerCase());
 
@@ -268,7 +278,7 @@ function render(){
   closeSheet();
   if (!S.token){ return renderPin(); }
   const v = (location.hash || '#home').slice(1);
-  const views = { home: homeLoad, opname: renderOpname, gudang: renderGudang, po: renderPO, review: renderReview };
+  const views = { home: homeLoad, opname: renderOpname, gudang: renderGudang, po: renderPO, review: renderReview, riwayat: renderRiwayat };
   (views[v] || renderHome)();
 }
 
@@ -336,10 +346,13 @@ function renderHome(){
       <span class="grow"><b>Gudang IN / OUT</b><span class="muted">Dry goods &amp; Dry Store</span></span></button>
     <button type="button" class="tile" onclick="go('po')"><span class="ic">${ICON.chat}</span>
       <span class="grow"><b>PO</b><span class="muted">${c ? `${c.perluOrder} perlu order, ${c.menunggu} menunggu datang` : 'Order ke supplier'}</span></span>${c ? badge(c.perluOrder) : ''}</button>
+    <button type="button" class="tile" onclick="go('riwayat')"><span class="ic">${ICON.clock}</span>
+      <span class="grow"><b>Riwayat</b><span class="muted">Semua input per tanggal</span></span></button>
     ${isReviewer() ? `<button type="button" class="tile dark" onclick="go('review')"><span class="ic">${ICON.warn}</span>
       <span class="grow"><b>Perlu Ditinjau</b><span class="muted">Angka tidak biasa dari staf</span></span>${c ? badge(c.review) : ''}</button>` : ''}
     <h2 class="sect">Input terakhir kamu</h2>
     <div class="card" style="padding:4px 16px" id="recent">${recentHTML()}</div>
+    <button type="button" class="btn b-oline sm" onclick="S.hMine=true;go('riwayat')">Lihat semua input saya</button>
   </div>`;
   $('#menuBtn').onclick = openMenu;
   $$('[data-undo]').forEach(btn => btn.onclick = () => doUndo(btn.dataset.undo));
@@ -452,13 +465,14 @@ function drawGudangList(items){
     const mm = (it.min !== null && it.max !== null) ? `Min ${fmt(it.min)} · Max ${fmt(it.max)}` : 'Satuan / Min / Max belum diisi';
     const ord = it.ordered ? ' · sudah diorder' : '';
     return `<div class="card ${it.status === 'PESAN' ? 'redline' : ''}">
-      <div class="row" style="align-items:baseline"><span class="grow" style="font-size:17px;font-weight:700">${esc(it.n)}</span>
+      <div class="row" style="align-items:baseline"><button type="button" class="grow linkname" data-h="${idx}">${esc(it.n)}</button>
         <span style="font-size:24px;font-weight:800">${noSaldo ? '–' : fmt(it.stok)} <span style="font-size:14px;font-weight:500">${esc(it.u)}</span></span></div>
       <div class="row">${chip}<span class="grow small" style="color:var(--muted)">${noSaldo ? 'Belum ada saldo, hitung fisik dulu' : mm + ord}</span>
       ${noSaldo ? `<button type="button" class="btn b-olive sm" data-i="${idx}" data-t="HITUNG">Hitung fisik</button>` :
         `<button type="button" class="btn b-ink sm" data-i="${idx}" data-t="OUT">OUT</button><button type="button" class="btn b-oline sm" data-i="${idx}" data-t="IN">IN</button>`}</div>
     </div>`; }).join('') || '<div class="empty">Item tidak ditemukan.</div>';
   $$('[data-t]', el).forEach(b => b.onclick = () => openGudangSheet(list[Number(b.dataset.i)], b.dataset.t));
+  $$('[data-h]', el).forEach(b => b.onclick = () => openItemHistory(list[Number(b.dataset.h)].n));
 }
 function openGudangSheet(it, tipe){
   const tipes = [['OUT','OUT · ambil'], ['IN','IN · masuk'], ['HITUNG','Hitung fisik']];
@@ -639,6 +653,71 @@ function openReceive(w){
       closeSheet(); toast('Barang datang tercatat'); S.boot = null; renderPO();
     } catch (e) { const box = $('#rErr'); if (box) box.innerHTML = `<div class="errbox">${esc(e.message)}</div>`; else showErr(e); }
   };
+}
+
+/* =========================================================
+   RIWAYAT
+   ========================================================= */
+const isoWita = d => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Makassar', year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+const shiftIso = (iso, n) => isoWita(new Date(new Date(iso + 'T12:00:00+08:00').getTime() + n * 86400000));
+const longDate = iso => new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Makassar', weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(iso + 'T12:00:00+08:00'));
+const TIPE_FILTER = { 'Semua': null, 'Opname': ['OPNAME'], 'OUT': ['OUT'], 'IN': ['IN'], 'Hitung': ['ADJ','SALDO_AWAL'], 'Terima': ['TERIMA'], 'Koreksi': ['KOREKSI'], 'Anomali': 'ANOMALI' };
+
+function histRowHTML(l, showDate){
+  const after = (l.setelah !== '' && l.setelah !== null && l.tipe !== 'OPNAME' && l.tipe !== 'TERIMA') ? ` · stok jadi ${fmt(l.setelah)} ${esc(l.u)}` : '';
+  const badge = l.status === 'ANOMALI' ? '<span class="chip c-pesan">ANOMALI</span>' : l.status === 'BATAL' ? '<span class="chip c-cek">BATAL</span>' : '';
+  return `<div class="hrow ${l.status === 'BATAL' ? 'batal' : ''}">
+    <div class="row">${tipeChip(l.tipe)}<span class="grow hmain" style="font-size:16px;font-weight:700">${esc(l.item)}</span>
+      <b class="hmain" style="font-size:17px;white-space:nowrap">${fmt(l.qty)} ${esc(l.u)}</b></div>
+    <div class="row"><span class="grow small" style="color:var(--muted)">${esc(showDate ? l.waktu : l.jam)} · ${esc(l.staf)}${after}</span>${badge}
+      ${l.canUndo ? `<button type="button" class="btn b-line sm" style="height:36px" data-undo="${esc(l.id)}">Batal</button>` : ''}</div>
+    ${l.catatan ? `<span class="small">“${esc(l.catatan)}”</span>` : ''}
+  </div>`;
+}
+
+async function renderRiwayat(){
+  const todayIso = isoWita(new Date());
+  if (!S.hDate) S.hDate = todayIso;
+  const draw = (list) => {
+    const f = TIPE_FILTER[S.hTipe];
+    const shown = !list ? null : list.filter(l => !f ? true : f === 'ANOMALI' ? l.status === 'ANOMALI' : f.includes(l.tipe));
+    app().innerHTML = header('Riwayat', list ? `${list.length} input di tanggal ini` : 'Memuat…') + `
+    <div class="datenav">
+      <button type="button" class="iconbtn" aria-label="Hari sebelumnya" data-d="-1">${ICON.back}</button>
+      <label class="hidden" for="hd">Tanggal</label>
+      <input id="hd" type="date" value="${S.hDate}" max="${todayIso}">
+      <button type="button" class="iconbtn" aria-label="Hari berikutnya" data-d="1" ${S.hDate >= todayIso ? 'disabled' : ''}>${ICON.next}</button>
+    </div>
+    <div class="wrap" style="padding-bottom:0"><span style="font-weight:700;color:var(--olive)">${esc(longDate(S.hDate))}${S.hDate === todayIso ? ' (hari ini)' : ''}</span></div>
+    <div class="pills" style="padding-top:8px">
+      <button type="button" class="pill ${!S.hMine ? 'on' : ''}" data-mine="0">Semua staf</button>
+      <button type="button" class="pill ${S.hMine ? 'on' : ''}" data-mine="1">Input saya</button>
+    </div>
+    <div class="pills" style="padding-top:4px">${Object.keys(TIPE_FILTER).map(t => `<button type="button" class="pill ${t === S.hTipe ? 'on' : ''}" data-tp="${t}">${t}</button>`).join('')}</div>
+    <div class="wrap">${!shown ? '<div class="empty">Memuat…</div>' : shown.length ? `<div class="card" style="padding:2px 16px">${shown.map(l => histRowHTML(l, false)).join('')}</div>`
+      : `<div class="empty">Tidak ada input${S.hTipe !== 'Semua' ? ' ' + esc(S.hTipe) : ''} di tanggal ini.</div>`}
+      <p class="muted small" style="margin:4px 0 0">Ketuk nama item di menu Gudang untuk melihat riwayat 1 item.</p></div>`;
+    $$('[data-d]').forEach(b => b.onclick = () => { S.hDate = shiftIso(S.hDate, Number(b.dataset.d)); renderRiwayat(); });
+    $('#hd').onchange = e => { if (e.target.value) { S.hDate = e.target.value > todayIso ? todayIso : e.target.value; renderRiwayat(); } };
+    $$('[data-mine]').forEach(b => b.onclick = () => { S.hMine = b.dataset.mine === '1'; renderRiwayat(); });
+    $$('[data-tp]').forEach(b => b.onclick = () => { S.hTipe = b.dataset.tp; draw(list); });
+    $$('[data-undo]').forEach(b => b.onclick = async () => { await doUndo(b.dataset.undo); });
+  };
+  draw(null);
+  try { const r = await api('history', { date: S.hDate, mine: S.hMine }); draw(r.list); } catch (e) { showErr(e); }
+}
+
+async function openItemHistory(name){
+  const sh = openSheet(`<div class="row"><h2 class="grow">Riwayat ${esc(name)}</h2><button type="button" class="iconbtn" aria-label="Tutup" data-close>${ICON.close}</button></div><div id="ih" class="empty">Memuat…</div>`);
+  $('[data-close]', sh).onclick = closeSheet;
+  try {
+    const r = await api('history', { item: name });
+    const box = $('#ih'); if (!box) return;
+    box.className = '';
+    box.innerHTML = r.list.length ? `<div class="card" style="padding:2px 16px">${r.list.map(l => histRowHTML(l, true)).join('')}</div><p class="muted small">Menampilkan maksimal 60 input terakhir.</p>`
+      : '<div class="empty">Belum ada input untuk item ini.</div>';
+    $$('[data-undo]', box).forEach(b => b.onclick = async () => { closeSheet(); await doUndo(b.dataset.undo); });
+  } catch (e) { showErr(e); }
 }
 
 /* =========================================================
